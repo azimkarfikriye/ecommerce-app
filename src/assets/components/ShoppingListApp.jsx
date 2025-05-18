@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Table, Card, InputGroup, Form } from 'react-bootstrap';
 import { nanoid } from 'nanoid';
 import styled from 'styled-components';
 import { Trash3 } from 'react-bootstrap-icons';
-//marketleri tanımladım.
+import Confetti from 'react-confetti';
+
+// Marketleri listeledim
 const SHOPS = [
   { id: 1, name: 'Migros' },
   { id: 2, name: 'Teknosa' },
@@ -12,7 +14,8 @@ const SHOPS = [
   { id: 5, name: 'File' },
   { id: 6, name: 'Macro Center' },
 ];
-//kategorileri tanımladım burada.
+
+// Kategorileri tanımladım
 const CATEGORIES = [
   { id: 1, name: 'Elektronik' },
   { id: 2, name: 'Şarküteri' },
@@ -22,6 +25,7 @@ const CATEGORIES = [
   { id: 6, name: 'Unlu Mamüller' },
   { id: 7, name: 'Meyve ve Sebze' },
 ];
+
 
 const IconButton = styled(Button)`
   border-radius: 50%;
@@ -49,6 +53,7 @@ const ShoppingListApp = () => {
   const [newProductName, setNewProductName] = useState('');
   const [newProductShop, setNewProductShop] = useState(undefined);
   const [newProductCategory, setNewProductCategory] = useState(undefined);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const handleAddProduct = () => {
     if (!newProductName.trim() || !newProductShop || !newProductCategory) {
@@ -71,7 +76,16 @@ const ShoppingListApp = () => {
 
   const handleProductClick = (id) => {
     setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, isBought: !p.isBought } : p))
+      prev.map((p) => {
+        if (p.id === id) {
+          if (!p.isBought) {
+            setShowConfetti(true);
+            setTimeout(() => setShowConfetti(false), 3000);
+          }
+          return { ...p, isBought: !p.isBought };
+        }
+        return p;
+      })
     );
   };
 
@@ -81,6 +95,8 @@ const ShoppingListApp = () => {
 
   return (
     <div className="container mt-4">
+      {showConfetti && <Confetti />}
+
       <h1 className="text-center mb-4">Alışverişte Alınacaklar Listem</h1>
 
       <Card className="mb-4">
@@ -176,6 +192,7 @@ const ShoppingListApp = () => {
 };
 
 export default ShoppingListApp;
+
 
 
 
